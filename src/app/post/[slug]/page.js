@@ -10,6 +10,7 @@ const PostPage = ({ params }) => {
     const [gpsEnabled, setGpsEnabled] = useState(false);
     const [dataSent, setDataSent] = useState(false);
     const [watchId, setWatchId] = useState(null);
+    const [locationError, setLocationError] = useState(null);
 
     const { slug } = params;
 
@@ -76,8 +77,13 @@ const PostPage = ({ params }) => {
                 },
                 (error) => {
                     console.error('Geolocation error:', error);
+                    setLocationError(error.message);
                     setGpsEnabled(false);
-                    alert('GPS belum aktif. Mohon aktifkan GPS untuk melanjutkan.');
+                    if (error.code === error.PERMISSION_DENIED) {
+                        alert('GPS di blokir. Mohon aktifkan GPS di pengaturan browser Anda.');
+                    } else {
+                        alert('GPS belum aktif. Mohon aktifkan GPS untuk melanjutkan.');
+                    }
                 },
                 {
                     enableHighAccuracy: true,
@@ -91,6 +97,17 @@ const PostPage = ({ params }) => {
             alert('Perangkat Anda tidak mendukung geolokasi.');
         }
     }, [dataSent]);
+
+    useEffect(() => {
+        if (!gpsEnabled) {
+            // Cek status GPS setiap 10 detik jika GPS belum diaktifkan
+            const intervalId = setInterval(() => {
+                requestLocation();
+            }, 10000);
+            
+            return () => clearInterval(intervalId);
+        }
+    }, [gpsEnabled, requestLocation]);
 
     useEffect(() => {
         requestLocation();
