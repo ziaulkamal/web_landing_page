@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@network-utils/arp-lookup": "^2.1.0",
+    "next": "14.2.9",
+    "node-arp": "^1.0.6",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.9"
+    "react-dom": "^18"
   }
 }
