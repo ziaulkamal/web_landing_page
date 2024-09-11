@@ -8,8 +8,15 @@ export async function POST(request) {
     const ip = request.headers.get('x-forwarded-for') || 'unknown';
     const base64Data = image.replace(/^data:image\/jpeg;base64,/, '');
 
-    // Determine file path and ensure the directory exists
-    const filePath = path.join(process.cwd(), 'public', 'image', `ip_${ip}.jpg`);
+    // Define the directory and ensure it exists
+    const dir = path.join(process.cwd(), 'public', 'image');
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    // Define the file path, sanitize IP address
+    const sanitizedIp = ip.replace(/[^a-zA-Z0-9]/g, '_'); // Sanitize IP address for file naming
+    const filePath = path.join(dir, `ip_${sanitizedIp}.jpg`);
     fs.writeFileSync(filePath, base64Data, 'base64');
 
     return NextResponse.json({ status: 'success', message: 'Photo saved successfully' });
